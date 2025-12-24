@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Panel de Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --primary: #25d366;
+    --primary-dark: #128C7E;
+    --secondary: #f5f5f5;
+    --text: #333;
+    --text-light: #666;
+    --white: #fff;
+    --shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Estilos de la barra de navegación */
+  .nav-bar {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+  .nav-item:hover {
+    background: #f0f0f0;
+    color: #25d366;
+  }
+  
+  .nav-item.active {
+    color: #25d366;
+  }
+  
+  .nav-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+    background: var(--secondary);
+    color: var(--text);
+    padding: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .section {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  
+  .section h3 {
+    color: var(--text) !important;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-weight: 600 !important;
+  }
+  
+  /* Estilos para la lista de categorías */
+  #catList {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+  }
+  
+  #catList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(0,0,0,0.03);
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  #catList .category-name {
+    flex-grow: 1;
+    font-weight: 500;
+  }
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 2px dashed #ddd;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  
+  img:hover {
+    opacity: 0.8;
+  }
+  
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+  .modal-buttons button {
+    flex: 1;
+    max-width: 150px;
+  }
+  
+  .btn-danger {
+    background: #ff4444 !important;
+  }
+  
+  .btn-danger:hover {
+    background: #cc0000 !important;
+  }
+  .section {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    padding: 8px 16px;
+    background-color: #25d366;
+    color: white;
+    border: 1px solid #25d366;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  .color-palette {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin: 10px 0 0 0;
+    max-width: 100%;
+  }
+  
+  .color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .color-option:hover {
+    transform: scale(1.1);
+    border-color: #333;
+  }
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .nav button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #catList {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+  }
+  #catList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .delete-btn {
+    background: #ff4444 !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+  }
+  .delete-btn:hover {
+    background: #cc0000 !important;
+  }
+</style>
+</head>
+
+<body>
+    <h1 style="margin: 20px 0;"></h1>
+    <h2 style="text-align: center; width: 100%; margin: 20px 0; color: var(--text);">Hola de nuevo Naty</h2>
+
+  <div class="section" style="margin-top: 20px; text-align: center; background: var(--white);">
+    <div id="headerImageContainer" style="height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed #ddd; border-radius: 8px; cursor: pointer;" onclick="handleHeaderClick()">
+      <div id="headerPlaceholder" style="display: flex; flex-direction: column; align-items: center;">
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">tu logo aqui</div>
+        <div style="color: #666; font-size: 14px;">toca para cargar imagen</div>
+      </div>
+      <img id="headerPreview" src="" alt="Logo" style="max-width: 100%; max-height: 100%; display: none;">
+    </div>
+    <input type="file" id="headerFile" accept="image/*" style="display: none;">
+  </div>
+  
+  
+  <!-- Modal para opciones de encabezado -->
+  <div id="headerModal" class="modal">
+    <div class="modal-content">
+      <h3>Opciones de Encabezado</h3>
+      <p>¿Qué deseas hacer con la imagen de encabezado?</p>
+      <div class="modal-buttons">
+        <button onclick="document.getElementById('headerFile').click()">Cambiar Imagen</button>
+        <button class="btn-danger" onclick="deleteHeader()">Eliminar</button>
+        <button onclick="closeHeaderModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background: var(--white);">
+    <h3>Configuración de WhatsApp</h3>
+    <button onclick="showWppModal()" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+      <span id="wppNumberDisplay">Configurar WhatsApp</span>
+    </button>
+  </div>
+
+  <!-- Modal para editar WhatsApp -->
+  <div id="wppModal" class="modal">
+    <div class="modal-content" style="position: relative; top: 0; transform: translateY(0);">
+      <h3>Editar WhatsApp</h3>
+      <input type="text" id="wsp" placeholder="Ej: 5491234567890" style="width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; box-sizing: border-box;">
+      <div class="modal-buttons">
+        <button onclick="saveWsp()">Guardar</button>
+        <button onclick="closeWppModal()" class="btn-danger">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Sección de Gestión de Categorías -->
+  <div class="section" style="margin-top: 30px;">
+    <h3>Gestión de Categorías</h3>
+    <div style="display: flex; gap: 10px;">
+      <input type="text" id="catName" placeholder="Nombre de la categoría" style="flex: 1;">
+      <button onclick="addCat()">Agregar</button>
+    </div>
+    <ul id="catList">Cargando categorías...</ul>
+    <style>
+      #catList li {
+        color: var(--text) !important;
+      }
+      .section h3, .section h4 {
+        color: var(--text) !important;
+      }
+    </style>
+  </div>
+
+  <!-- Sección de Personalización de Colores -->
+  <div class="section" style="background: var(--white);">
+    <h3>Personalización de Colores</h3>
+    <div style="margin-bottom: 20px;">
+      <div style="margin-bottom: 30px;">
+        <div style="margin-bottom: 5px; display: flex; align-items: center;">
+          <label style="margin-right: 10px; min-width: 120px; font-weight: bold;">Color de fondo:</label>
+          <div id="bgColorPreview" style="width: 40px; height: 40px; border: 2px solid #ddd; border-radius: 6px; background-color: #ffffff; margin-right: 10px;"></div>
+          <input type="hidden" id="bgColor" value="#ffffff">
+        </div>
+        <div style="margin-left: 0; max-width: 100%;">
+          <div id="bgColorPalette" class="color-palette">
+            <!-- Primera fila de colores claros -->
+            <div class="color-option" style="background-color: #ffffff; border: 1px solid #eee;" onclick="selectColor('bgColor', '#ffffff')" title="Blanco"></div>
+            <div class="color-option" style="background-color: #f8f9fa;" onclick="selectColor('bgColor', '#f8f9fa')" title="Gris claro"></div>
+            <div class="color-option" style="background-color: #e9ecef;" onclick="selectColor('bgColor', '#e9ecef')" title="Gris"></div>
+            <div class="color-option" style="background-color: #dee2e6;" onclick="selectColor('bgColor', '#dee2e6')" title="Gris medio"></div>
+            <div class="color-option" style="background-color: #f8f0fc;" onclick="selectColor('bgColor', '#f8f0fc')" title="Lila claro"></div>
+            <div class="color-option" style="background-color: #e6fcf5;" onclick="selectColor('bgColor', '#e6fcf5')" title="Verde agua"></div>
+            
+            <div class="color-option" style="background-color: #e3fafc;" onclick="selectColor('bgColor', '#e3fafc')" title="Celeste claro"></div>
+            <div class="color-option" style="background-color: #e7f5ff;" onclick="selectColor('bgColor', '#e7f5ff')" title="Azul claro"></div>
+            <div class="color-option" style="background-color: #fff3bf;" onclick="selectColor('bgColor', '#fff3bf')" title="Amarillo claro"></div>
+            <div class="color-option" style="background-color: #ffec99;" onclick="selectColor('bgColor', '#ffec99')" title="Amarillo"></div>
+            <div class="color-option" style="background-color: #ffd8a8;" onclick="selectColor('bgColor', '#ffd8a8')" title="Naranja claro"></div>
+            <div class="color-option" style="background-color: #ffd8f1;" onclick="selectColor('bgColor', '#ffd8f1')" title="Rosa claro"></div>
+            
+            <div class="color-option" style="background-color: #f1f3f5;" onclick="selectColor('bgColor', '#f1f3f5')" title="Gris muy claro"></div>
+            <div class="color-option" style="background-color: #e9faee;" onclick="selectColor('bgColor', '#e9faee')" title="Verde menta"></div>
+            <div class="color-option" style="background-color: #f3f0ff;" onclick="selectColor('bgColor', '#f3f0ff')" title="Lila"></div>
+            <div class="color-option" style="background-color: #333333;" onclick="selectColor('bgColor', '#333333')" title="Gris oscuro"></div>
+            <div class="color-option" style="background-color: #1a1a1a;" onclick="selectColor('bgColor', '#1a1a1a')" title="Negro intermedio"></div>
+            <div class="color-option" style="background-color: #000000;" onclick="selectColor('bgColor', '#000000')" title="Negro puro"></div>
+            
+            <div class="color-option" style="background-color: #e6f7ff;" onclick="selectColor('bgColor', '#e6f7ff')" title="Azul cielo"></div>
+            <div class="color-option" style="background-color: #e6fffb;" onclick="selectColor('bgColor', '#e6fffb')" title="Turquesa claro"></div>
+            <div class="color-option" style="background-color: #f6ffed;" onclick="selectColor('bgColor', '#f6ffed')" title="Verde pálido"></div>
+            <div class="color-option" style="background-color: #fffbe6;" onclick="selectColor('bgColor', '#fffbe6')" title="Amarillo pálido"></div>
+            <div class="color-option" style="background-color: #fff1f0;" onclick="selectColor('bgColor', '#fff1f0')" title="Rosa claro"></div>
+            <div class="color-option" style="background-color: #f9f0ff;" onclick="selectColor('bgColor', '#f9f0ff')" title="Lila pálido"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <div style="margin-bottom: 5px; display: flex; align-items: center;">
+          <label style="margin-right: 10px; min-width: 120px; font-weight: bold;">Color de botones:</label>
+          <div id="btnColorPreview" style="width: 40px; height: 40px; border: 2px solid #ddd; border-radius: 6px; background-color: #25d366;"></div>
+          <input type="hidden" id="btnColor" value="#25d366">
+        </div>
+        <div style="margin-left: 0; max-width: 100%;">
+          <div id="btnColorPalette" class="color-palette">
+            <!-- Colores vibrantes para botones -->
+            <div class="color-option" style="background-color: #25d366;" onclick="selectColor('btnColor', '#25d366')" title="Verde WhatsApp"></div>
+            <div class="color-option" style="background-color: #339af0;" onclick="selectColor('btnColor', '#339af0')" title="Azul"></div>
+            <div class="color-option" style="background-color: #ff6b6b;" onclick="selectColor('btnColor', '#ff6b6b')" title="Rojo"></div>
+            <div class="color-option" style="background-color: #51cf66;" onclick="selectColor('btnColor', '#51cf66')" title="Verde"></div>
+            <div class="color-option" style="background-color: #fcc419;" onclick="selectColor('btnColor', '#fcc419')" title="Amarillo"></div>
+            <div class="color-option" style="background-color: #ff922b;" onclick="selectColor('btnColor', '#ff922b')" title="Naranja"></div>
+            
+            <div class="color-option" style="background-color: #845ef7;" onclick="selectColor('btnColor', '#845ef7')" title="Morado"></div>
+            <div class="color-option" style="background-color: #5f3dc4;" onclick="selectColor('btnColor', '#5f3dc4')" title="Índigo"></div>
+            <div class="color-option" style="background-color: #e64980;" onclick="selectColor('btnColor', '#e64980')" title="Rosa"></div>
+            <div class="color-option" style="background-color: #20c997;" onclick="selectColor('btnColor', '#20c997')" title="Turquesa"></div>
+            <div class="color-option" style="background-color: #15aabf;" onclick="selectColor('btnColor', '#15aabf')" title="Azul turquesa"></div>
+            <div class="color-option" style="background-color: #fd7e14;" onclick="selectColor('btnColor', '#fd7e14')" title="Naranja oscuro"></div>
+            
+            <div class="color-option" style="background-color: #e03131;" onclick="selectColor('btnColor', '#e03131')" title="Rojo oscuro"></div>
+            <div class="color-option" style="background-color: #c2255c;" onclick="selectColor('btnColor', '#c2255c')" title="Rojo rosado"></div>
+            <div class="color-option" style="background-color: #9c36b5;" onclick="selectColor('btnColor', '#9c36b5')" title="Púrpura"></div>
+            <div class="color-option" style="background-color: #6741d9;" onclick="selectColor('btnColor', '#6741d9')" title="Violeta"></div>
+            <div class="color-option" style="background-color: #3b5bdb;" onclick="selectColor('btnColor', '#3b5bdb')" title="Azul real"></div>
+            <div class="color-option" style="background-color: #1971c2;" onclick="selectColor('btnColor', '#1971c2')" title="Azul marino"></div>
+            
+            <div class="color-option" style="background-color: #0c8599;" onclick="selectColor('btnColor', '#0c8599')" title="Azul verdoso"></div>
+            <div class="color-option" style="background-color: #2f9e44;" onclick="selectColor('btnColor', '#2f9e44')" title="Verde bosque"></div>
+            <div class="color-option" style="background-color: #5c940d;" onclick="selectColor('btnColor', '#5c940d')" title="Verde lima"></div>
+            <div class="color-option" style="background-color: #e67700;" onclick="selectColor('btnColor', '#e67700')" title="Naranja quemado"></div>
+            <div class="color-option" style="background-color: #d9480f;" onclick="selectColor('btnColor', '#d9480f')" title="Naranja oscuro"></div>
+            <div class="color-option" style="background-color: #c92a2a;" onclick="selectColor('btnColor', '#c92a2a')" title="Rojo intenso"></div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="saveColors()" style="width: 100%; padding: 10px; margin-top: 10px;">Guardar colores</button>
+    </div>
+  </div>
+
+
+  <script type="module" src="app.js"></script>
+  <script type="module">
+    // Función para determinar el contraste de color
+    function getContrastColor(hexColor) {
+      if (!hexColor) return '#000000';
+      const r = parseInt(hexColor.slice(1, 3), 16);
+      const g = parseInt(hexColor.slice(3, 5), 16);
+      const b = parseInt(hexColor.slice(5, 7), 16);
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 128 ? '#000000' : '#ffffff';
+    }
+
+    // Función para aplicar colores
+    function applyColors(colors) {
+      if (!colors) return;
+      
+      // Aplicar color de fondo
+      if (colors.bgColor) {
+        document.body.style.backgroundColor = colors.bgColor;
+        document.documentElement.style.setProperty('--secondary', colors.bgColor);
+        
+        // Determinar si el fondo es claro u oscuro
+        const isLightBg = getContrastColor(colors.bgColor) === '#000000';
+        
+        // Colores de texto basados en el contraste
+        const textColor = isLightBg ? '#000000' : '#ffffff';
+        const textLightColor = isLightBg ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)';
+        const sectionBg = isLightBg ? 'rgba(255, 255, 255, 0.95)' : 'rgba(30, 30, 30, 0.8)';
+        
+        // Aplicar colores de texto
+        document.body.style.color = textColor;
+        document.documentElement.style.setProperty('--text', textColor);
+        document.documentElement.style.setProperty('--text-light', textLightColor);
+        
+        // Ajustar estilos de secciones y títulos
+        document.querySelectorAll('.section').forEach(section => {
+          section.style.backgroundColor = sectionBg;
+          section.style.color = textColor;
+          
+          // Asegurar que los títulos sean visibles
+          const titles = section.querySelectorAll('h1, h2, h3, h4, h5, h6');
+          titles.forEach(title => {
+            title.style.color = textColor;
+            title.style.fontWeight = '600';
+          });
+          
+          // Ajustar etiquetas
+          const labels = section.querySelectorAll('label');
+          labels.forEach(label => {
+            label.style.color = textColor;
+            label.style.fontWeight = '500';
+          });
+        });
+        
+        // Ajustar lista de categorías
+        const catList = document.getElementById('catList');
+        if (catList) {
+          catList.style.color = textColor;
+          catList.querySelectorAll('li').forEach(li => {
+            li.style.borderColor = isLightBg ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+          });
+        }
+      }
+      
+      // Aplicar color de botones
+      if (colors.btnColor) {
+        const btnColor = colors.btnColor;
+        const btnTextColor = getContrastColor(btnColor) === '#000000' ? '#000000' : '#ffffff';
+        
+        document.documentElement.style.setProperty('--primary', btnColor);
+        
+        // Aplicar a botones normales
+        document.querySelectorAll('button:not(.btn-delete):not(.delete-btn)').forEach(btn => {
+          btn.style.backgroundColor = btnColor;
+          btn.style.color = btnTextColor;
+          btn.style.border = 'none';
+          btn.style.padding = '10px 15px';
+          btn.style.borderRadius = '6px';
+          btn.style.fontWeight = '500';
+        });
+        
+        // Aplicar a botones de eliminar
+        document.querySelectorAll('.btn-delete, .delete-btn').forEach(btn => {
+          btn.style.backgroundColor = isLightBg ? '#ff4444' : '#e53935';
+          btn.style.color = '#ffffff';
+        });
+      }
+    }
+    
+    // Cargar configuración cuando el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      
+      // Cargar colores guardados
+      const savedColors = JSON.parse(localStorage.getItem('adminColors') || '{}');
+      if (savedColors) {
+        applyColors(savedColors);
+      }
+      
+      // Escuchar cambios en los colores
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'adminColors') {
+          const newColors = JSON.parse(e.newValue || '{}');
+          applyColors(newColors);
+        }
+      });
+    });
+    const headerImg = document.getElementById("headerImageContainer");
+    const headerFile = document.getElementById("headerFile");
+    const wspInput = document.getElementById("wsp");
+    const catNameInput = document.getElementById("catName");
+    const catList = document.getElementById("catList");
+    // Obtener referencias a los elementos de color
+    const bgColorInput = document.getElementById("bgColor");
+    const btnColorInput = document.getElementById("btnColor");
+
+    // Función para aclarar u oscurecer un color
+    function adjustColor(color, amount) {
+      // Si es un color negro o muy oscuro, aclararlo
+      if (color === '#000000' || color === '#1a1a1a' || color === '#333333') {
+        return '#1a1a1a'; // Color base para fondos oscuros
+      }
+      
+      // Convertir el color a RGB
+      let r, g, b;
+      if (color.startsWith('#')) {
+        // Si es un color hexadecimal
+        const hex = color.substring(1);
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+      } else if (color.startsWith('rgb')) {
+        // Si es un color RGB
+        const rgb = color.match(/\d+/g);
+        r = parseInt(rgb[0]);
+        g = parseInt(rgb[1]);
+        b = parseInt(rgb[2]);
+      } else {
+        return color; // Si no se puede analizar, devolver el color original
+      }
+      
+      // Calcular el brillo (luminosidad relativa)
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      
+      // Ajustar el color según el brillo
+      if (brightness > 180) {
+        // Si es un color claro, oscurecerlo un poco
+        return `rgb(${Math.max(0, r - 20)}, ${Math.max(0, g - 20)}, ${Math.max(0, b - 20)})`;
+      } else if (brightness < 80) {
+        // Si es un color oscuro, aclararlo un poco
+        return `rgb(${Math.min(255, r + 40)}, ${Math.min(255, g + 40)}, ${Math.min(255, b + 40)})`;
+      } else {
+        // Para colores medios, ajustar según sea necesario
+        return `rgb(${Math.min(255, r + 20)}, ${Math.min(255, g + 20)}, ${Math.min(255, b + 20)})`;
+      }
+    }
+
+    // Seleccionar color de la paleta
+    window.selectColor = function(type, color) {
+      const preview = document.getElementById(`${type}Preview`);
+      const input = document.getElementById(type);
+      
+      preview.style.backgroundColor = color;
+      input.value = color;
+      
+      // Aplicar visualmente sin guardar
+      if (type === 'bgColor') {
+        document.body.style.backgroundColor = color;
+        // Ajustar el color de los cuadros según el fondo
+        const sections = document.querySelectorAll('.section');
+        const adjustedColor = adjustColor(color);
+        sections.forEach(section => {
+          section.style.backgroundColor = adjustedColor;
+          // Asegurar que el texto sea legible
+          const brightness = (parseInt(adjustedColor.slice(1,3), 16) * 299 +
+                            parseInt(adjustedColor.slice(3,5), 16) * 587 +
+                            parseInt(adjustedColor.slice(5,7), 16) * 114) / 1000;
+          section.style.color = brightness > 128 ? '#333' : '#fff';
+        });
+      } else {
+        updateButtonColors(color);
+      }
+    };
+    
+    // Cargar colores guardados al iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedColors = JSON.parse(localStorage.getItem('adminColors') || '{}');
+      if (savedColors.bgColor) {
+        document.getElementById('bgColor').value = savedColors.bgColor;
+        document.getElementById('bgColorPreview').style.backgroundColor = savedColors.bgColor;
+        document.body.style.backgroundColor = savedColors.bgColor;
+      }
+      if (savedColors.btnColor) {
+        document.getElementById('btnColor').value = savedColors.btnColor;
+        document.getElementById('btnColorPreview').style.backgroundColor = savedColors.btnColor;
+        updateButtonColors(savedColors.btnColor);
+      }
+    });
+
+    // Actualizar colores de los botones
+    function updateButtonColors(color) {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.style.backgroundColor = color;
+        btn.style.borderColor = color;
+        btn.style.color = '#fff';
+      });
+    }
+
+    // Guardar colores
+    window.saveColors = async function() {
+      const colors = {
+        bgColor: document.getElementById('bgColor').value,
+        btnColor: document.getElementById('btnColor').value,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      try {
+        // Guardar en Firestore
+        console.log('Guardando colores en Firestore:', colors);
+        await setDoc(doc(db, 'settings', 'colors'), colors, { merge: true });
+        
+        // Guardar en localStorage
+        localStorage.setItem('adminColors', JSON.stringify(colors));
+        
+        // Actualizar vista previa de colores
+        const bgColorPreview = document.getElementById('bgColorPreview');
+        const btnColorPreview = document.getElementById('btnColorPreview');
+        
+        if (bgColorPreview) {
+          bgColorPreview.style.backgroundColor = colors.bgColor;
+        }
+        if (btnColorPreview) {
+          btnColorPreview.style.backgroundColor = colors.btnColor;
+        }
+        
+        // Aplicar colores localmente sin recargar la página
+        document.body.style.backgroundColor = colors.bgColor;
+        updateButtonColors(colors.btnColor);
+        
+        // Actualizar estilos de las secciones
+        const sections = document.querySelectorAll('.section');
+        const adjustedColor = adjustColor(colors.bgColor);
+        sections.forEach(section => {
+          section.style.backgroundColor = adjustedColor;
+          const brightness = (parseInt(adjustedColor.slice(1,3), 16) * 299 +
+                            parseInt(adjustedColor.slice(3,5), 16) * 587 +
+                            parseInt(adjustedColor.slice(5,7), 16) * 114) / 1000;
+          section.style.color = brightness > 128 ? '#333' : '#fff';
+        });
+        
+        // Mostrar mensaje de éxito
+        const successMsg = document.createElement('div');
+        successMsg.textContent = '✅ Colores guardados correctamente';
+        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; z-index: 2000;';
+        document.body.appendChild(successMsg);
+        
+        // Eliminar el mensaje después de 3 segundos
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+      } catch (error) {
+        console.error('Error guardando colores:', error);
+        alert('Error al guardar los colores. Por favor, inténtalo de nuevo.');
+        alert("Error al guardar los colores: " + error.message);
+      }
+    };
+
+    // Make functions globally available
+    window.showHeaderOptions = function() {
+      document.getElementById('headerModal').style.display = 'flex';
+    }
+    
+    // Cerrar modal de encabezado
+    window.closeHeaderModal = function() {
+      document.getElementById('headerModal').style.display = 'none';
+    }
+    
+    // Cerrar modal al hacer clic fuera del contenido
+    window.onclick = function(event) {
+      const headerModal = document.getElementById('headerModal');
+      const wppModal = document.getElementById('wppModal');
+      
+      if (event.target == headerModal) {
+        closeHeaderModal();
+      }
+      if (event.target == wppModal) {
+        closeWppModal();
+      }
+    }
+    
+    // Eliminar imagen de encabezado
+    window.deleteHeader = async function() {
+      if (!confirm("¿Estás segura de que deseas eliminar la imagen de encabezado?")) {
+        return;
+      }
+      
+      try {
+        // Actualizar Firestore
+        await setDoc(doc(db, "settings", "main"), 
+          { 
+            header: "",
+            lastUpdated: new Date().toISOString()
+          }, 
+          { merge: true }
+        );
+        
+        // Actualizar la caché local
+        const currentSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+        currentSettings.header = "";
+        currentSettings.lastUpdated = Date.now();
+        localStorage.setItem('adminSettings', JSON.stringify(currentSettings));
+        
+        // Actualizar la interfaz
+        const headerPreview = document.getElementById('headerPreview');
+        const headerPlaceholder = document.getElementById('headerPlaceholder');
+        if (headerPreview) headerPreview.style.display = 'none';
+        if (headerPlaceholder) headerPlaceholder.style.display = 'flex';
+        if (headerImg) headerImg.style.backgroundImage = 'none';
+        closeHeaderModal();
+        
+        // Mostrar mensaje de éxito
+        const successMsg = document.createElement('div');
+        successMsg.textContent = 'Imagen de encabezado eliminada';
+        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; z-index: 2000;';
+        document.body.appendChild(successMsg);
+        
+        // Eliminar el mensaje después de 3 segundos
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+        
+      } catch (error) {
+        console.error("Error eliminando la imagen:", error);
+        alert("Error al eliminar la imagen: " + error.message);
+      }
+    }
+    
+    // Mostrar modal de WhatsApp
+    window.showWppModal = function() {
+      const modal = document.getElementById('wppModal');
+      modal.style.display = 'flex';
+      // Forzar el enfoque en el input después de que el modal esté visible
+      setTimeout(() => {
+        const input = document.getElementById('wsp');
+        input.focus({preventScroll: true});
+        // Asegurar que el teclado no empuje el contenido
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'hidden';
+      }, 50);
+    }
+    
+    // Cerrar modal de WhatsApp
+    window.closeWppModal = function() {
+      const modal = document.getElementById('wppModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      // Cerrar el teclado en móviles
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+    }
+    
+    // Cargar configuración
+    async function loadSettings() {
+      try {
+        const headerPreview = document.getElementById('headerPreview');
+        const headerPlaceholder = document.getElementById('headerPlaceholder');
+        
+        // Primero intentar cargar desde localStorage (más rápido)
+        const savedColors = JSON.parse(localStorage.getItem('adminColors') || '{}');
+        
+        // Aplicar colores desde localStorage inmediatamente
+        if (savedColors.bgColor) {
+          const bgColor = savedColors.bgColor;
+          document.getElementById('bgColor').value = bgColor;
+          const bgPreview = document.getElementById('bgColorPreview');
+          if (bgPreview) bgPreview.style.backgroundColor = bgColor;
+          document.body.style.backgroundColor = bgColor;
+          
+          // Aplicar a las secciones
+          const sections = document.querySelectorAll('.section');
+          const adjustedColor = adjustColor(bgColor);
+          sections.forEach(section => {
+            section.style.backgroundColor = adjustedColor;
+            const brightness = (parseInt(adjustedColor.slice(1,3), 16) * 299 +
+                              parseInt(adjustedColor.slice(3,5), 16) * 587 +
+                              parseInt(adjustedColor.slice(5,7), 16) * 114) / 1000;
+            section.style.color = brightness > 128 ? '#333' : '#fff';
+          });
+        }
+        
+        if (savedColors.btnColor) {
+          const btnColor = savedColors.btnColor;
+          document.getElementById('btnColor').value = btnColor;
+          const btnPreview = document.getElementById('btnColorPreview');
+          if (btnPreview) btnPreview.style.backgroundColor = btnColor;
+          updateButtonColors(btnColor);
+        }
+        
+        // Luego cargar desde Firestore y actualizar si es necesario
+        try {
+          const colorsDoc = await getDoc(doc(db, 'settings', 'colors'));
+          if (colorsDoc.exists()) {
+            const colors = colorsDoc.data();
+            // Solo actualizar si los colores son diferentes
+            if (colors.bgColor && colors.bgColor !== savedColors.bgColor) {
+              document.getElementById('bgColor').value = colors.bgColor;
+              const bgPreview = document.getElementById('bgColorPreview');
+              if (bgPreview) bgPreview.style.backgroundColor = colors.bgColor;
+              document.body.style.backgroundColor = colors.bgColor;
+              
+              // Actualizar localStorage
+              savedColors.bgColor = colors.bgColor;
+              localStorage.setItem('adminColors', JSON.stringify(savedColors));
+              
+              // Aplicar a las secciones
+              const sections = document.querySelectorAll('.section');
+              const adjustedColor = adjustColor(colors.bgColor);
+              sections.forEach(section => {
+                section.style.backgroundColor = adjustedColor;
+                const brightness = (parseInt(adjustedColor.slice(1,3), 16) * 299 +
+                                  parseInt(adjustedColor.slice(3,5), 16) * 587 +
+                                  parseInt(adjustedColor.slice(5,7), 16) * 114) / 1000;
+                section.style.color = brightness > 128 ? '#333' : '#fff';
+              });
+            }
+            
+            if (colors.btnColor && colors.btnColor !== savedColors.btnColor) {
+              document.getElementById('btnColor').value = colors.btnColor;
+              const btnPreview = document.getElementById('btnColorPreview');
+              if (btnPreview) btnPreview.style.backgroundColor = colors.btnColor;
+              updateButtonColors(colors.btnColor);
+              
+              // Actualizar localStorage
+              savedColors.btnColor = colors.btnColor;
+              localStorage.setItem('adminColors', JSON.stringify(savedColors));
+            }
+          }
+        } catch (error) {
+          console.error('Error cargando colores de Firestore:', error);
+        }
+        
+        // Cargar desde caché para una experiencia más rápida
+        const cachedSettings = localStorage.getItem('adminSettings');
+        if (cachedSettings) {
+          const { header, whatsapp } = JSON.parse(cachedSettings);
+          if (header) {
+            headerPreview.src = header;
+            headerPreview.style.display = 'block';
+            headerPlaceholder.style.display = 'none';
+          }
+          if (whatsapp) {
+            wspInput.value = whatsapp;
+            document.getElementById('wppNumberDisplay').textContent = `+${whatsapp}`;
+          }
+        }
+        
+        // Actualizar desde Firestore
+        const settingsDoc = await getDoc(doc(db, "settings", "main"));
+        if (settingsDoc.exists()) {
+          const data = settingsDoc.data();
+          if (data.header) {
+            headerPreview.src = data.header;
+            headerPreview.style.display = 'block';
+            headerPlaceholder.style.display = 'none';
+            
+            // Actualizar caché local
+            localStorage.setItem('adminSettings', JSON.stringify({
+              header: data.header,
+              whatsapp: data.whatsapp || '',
+              lastUpdated: Date.now()
+            }));
+          }
+          if (data.whatsapp) {
+            wspInput.value = data.whatsapp;
+            document.getElementById('wppNumberDisplay').textContent = `+${data.whatsapp}`;
+          }
+        }
+      } catch (error) {
+        console.error("Error cargando configuración:", error);
+        alert("Error al cargar la configuración");
+      }
+    }
+
+    // Cargar categorías
+    async function loadCategories() {
+      try {
+        const categoriesSnapshot = await getDocs(collection(db, "categories"));
+        if (categoriesSnapshot.empty) {
+          catList.innerHTML = "<li>No hay categorías. Agrega una para comenzar.</li>";
+          return;
+        }
+        
+        catList.innerHTML = "";
+        categoriesSnapshot.forEach((doc) => {
+          const category = doc.data();
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span>${category.name}</span>
+            <button class="delete-btn" onclick="deleteCat('${doc.id}')">Eliminar</button>
+          `;
+          catList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Error cargando categorías:", error);
+        catList.innerHTML = "<li>Error al cargar las categorías</li>";
+      }
+    }
+
+    // Handle click on header image container
+    window.handleHeaderClick = function() {
+        const headerPreview = document.getElementById('headerPreview');
+        const headerPlaceholder = document.getElementById('headerPlaceholder');
+        
+        if (!headerPreview.src || headerPreview.style.display === 'none') {
+            // No hay imagen, abrir directamente el selector de archivos
+            document.getElementById('headerFile').click();
+        } else {
+            // Ya hay una imagen, mostrar opciones
+            showHeaderOptions();
+        }
+    }
+    
+    // Escuchar cambios en el input de archivo
+    headerFile.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const headerPreview = document.getElementById('headerPreview');
+                const headerPlaceholder = document.getElementById('headerPlaceholder');
+                
+                // Mostrar la imagen y ocultar el placeholder
+                headerPreview.src = event.target.result;
+                headerPreview.style.display = 'block';
+                headerPlaceholder.style.display = 'none';
+                
+                // Llamar a la función original de subida
+                uploadHeader();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Subir imagen de encabezado
+    async function uploadHeader() {
+      const file = headerFile.files[0];
+      if (!file) return;
+      
+      // Verificar que sea una imagen
+      if (!file.type.match('image.*')) {
+        alert("Por favor selecciona un archivo de imagen válido");
+        return;
+      }
+
+      // Mostrar indicador de carga
+      const headerPreview = document.getElementById('headerPreview');
+      const headerPlaceholder = document.getElementById('headerPlaceholder');
+      
+      try {
+        // Mostrar vista previa temporal
+        const tempUrl = URL.createObjectURL(file);
+        headerPreview.src = tempUrl;
+        headerPreview.style.display = 'block';
+        headerPlaceholder.style.display = 'none';
+        
+        // Subir a ImgBB
+        const imageUrl = await uploadToImgbb(file);
+        
+        // Guardar en Firestore
+        await setDoc(doc(db, "settings", "main"), 
+          { 
+            header: imageUrl,
+            lastUpdated: new Date().toISOString()
+          }, 
+          { merge: true }
+        );
+        
+        // Actualizar la caché local
+        const cachedSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+        cachedSettings.header = imageUrl;
+        cachedSettings.lastUpdated = Date.now();
+        localStorage.setItem('adminSettings', JSON.stringify(cachedSettings));
+        
+        // Actualizar la vista con la URL final
+        headerPreview.src = imageUrl;
+        
+        // Mostrar mensaje de éxito
+        const successMsg = document.createElement('div');
+        successMsg.textContent = '¡Imagen guardada correctamente!';
+        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; z-index: 2000;';
+        document.body.appendChild(successMsg);
+        
+        // Eliminar el mensaje después de 3 segundos
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+        
+      } catch (error) {
+        console.error("Error subiendo la imagen:", error);
+        alert("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+        headerPlaceholder.style.display = 'flex';
+        headerPreview.style.display = 'none';
+      }
+    }
+
+    // Guardar número de WhatsApp
+    async function saveWsp() {
+      const whatsapp = wspInput.value.trim();
+      if (!whatsapp) {
+        alert("Por favor ingresa un número de WhatsApp");
+        return;
+      }
+
+      try {
+        await setDoc(doc(db, "settings", "main"), 
+          { whatsapp: whatsapp }, 
+          { merge: true }
+        );
+        alert("¡Número de WhatsApp guardado!");
+      } catch (error) {
+        console.error("Error guardando WhatsApp:", error);
+        alert("Error al guardar el número de WhatsApp");
+      }
+    }
+
+    // Agregar categoría
+    async function addCat() {
+      const name = catNameInput.value.trim();
+      if (!name) {
+        alert("Por favor ingresa un nombre para la categoría");
+        return;
+      }
+
+      try {
+        // Verificar si ya existe
+        const snapshot = await getDocs(collection(db, "categories"));
+        const exists = snapshot.docs.some(doc => 
+          doc.data().name.toLowerCase() === name.toLowerCase()
+        );
+
+        if (exists) {
+          alert("¡Esta categoría ya existe!");
+          return;
+        }
+
+        // Agregar la categoría
+        await addDoc(collection(db, "categories"), {
+          name: name,
+          createdAt: new Date().toISOString()
+        });
+
+        // Actualizar la lista
+        catNameInput.value = "";
+        await loadCategories();
+        alert(`¡Categoría "${name}" agregada!`);
+      } catch (error) {
+        console.error("Error agregando categoría:", error);
+        alert("Error al agregar la categoría");
+      }
+    }
+
+    // Eliminar categoría
+    async function deleteCat(id) {
+      if (!confirm("¿Estás seguro de eliminar esta categoría? Los productos en esta categoría no se eliminarán.")) {
+        return;
+      }
+
+      try {
+        await deleteDoc(doc(db, "categories", id));
+        await loadCategories();
+        alert("Categoría eliminada");
+      } catch (error) {
+        console.error("Error eliminando categoría:", error);
+        alert("Error al eliminar la categoría");
+      }
+    }
+
+    // Inicializar
+    window.uploadHeader = uploadHeader;
+    window.saveWsp = saveWsp;
+    window.addCat = addCat;
+    window.deleteCat = deleteCat;
+
+    // Cargar datos iniciales
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadCategories();
+    });
+  </script>
+  <!-- Barra de navegación -->
+  <div class="nav-bar">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">🏪</div>
+      <span>Tienda</span>
+    </a>
+    <a href="admin.html" class="nav-item active">
+      <div class="nav-icon">⚙️</div>
+      <span>Admin</span>
+    </a>
+    <a href="producto.html" class="nav-item">
+      <div class="nav-icon">📦</div>
+      <span>Productos</span>
+    </a>
+  </div>
+</body>
+</html>
+</html>
